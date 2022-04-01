@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "nodemon src/server/index.ts",
+    "dev": "NODE_ENV=development nodemon src/server/index.ts",
     "build": "next build && tsc && tsc --project tsconfig.server.json",
     "start": "NODE_ENV=production node .next/server/index.js",
     "test": "NODE_ENV=test jest",

@@ -1,7 +1,6 @@
 import app from './app';
 import next from 'next';
 
-const port = process.env.PORT || 3000;
 const dev = process.env.NODE_ENV !== 'production';
 const server = next({ dev });
 const handle = server.getRequestHandler();
@@ -13,6 +12,7 @@ server
       return handle(req, res);
     });
 
+    const port = process.env.PORT || 3000;
     app.listen(port, () => {
       console.log(`Server now listening on port ${port}`);
     });
