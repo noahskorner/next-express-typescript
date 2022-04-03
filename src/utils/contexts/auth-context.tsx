@@ -3,6 +3,7 @@ import { createContext, useEffect, useState } from 'react';
 import RequestUser from '../types/dtos/request-user';
 import jwt_decode from 'jwt-decode';
 import AuthService from '../../services/auth-service';
+import { useRouter } from 'next/router';
 
 interface JwtToken extends RequestUser {
   exp: number;
@@ -38,6 +39,7 @@ export const AuthProvider = ({ children }: AuthProviderInterface) => {
   );
   const [user, setUser] = useState<RequestUser | null>(defaultValues.user);
   const [loading, setLoading] = useState<boolean>(defaultValues.loading);
+  const router = useRouter();
 
   const setAuth = (accessToken: string) => {
     const { exp, ...rest } = jwt_decode<JwtToken>(accessToken);
@@ -50,12 +52,12 @@ export const AuthProvider = ({ children }: AuthProviderInterface) => {
   };
 
   const refreshAccessToken = async () => {
-    setLoading(true);
     try {
       const response = await AuthService.refreshToken();
       setAuth(response.data);
     } catch {
-      console.log('Refresh token is expired...');
+      // refresh token is expired
+      router.push('/login');
     } finally {
       setLoading(false);
     }

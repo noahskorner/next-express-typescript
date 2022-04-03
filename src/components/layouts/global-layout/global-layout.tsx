@@ -12,7 +12,7 @@ const GlobalLayout = ({ children }: GlobalLayoutProps) => {
     <AuthProvider>
       <div
         style={{ width: widthStyle, height: heightStyle }}
-        className="font-primary text-white"
+        className="font-primary text-white bg-slate-900"
       >
         {children}
       </div>
