@@ -4,14 +4,9 @@ import { exec } from 'child_process';
 const seedDatabase = async () => {
   await new Promise((resolve, reject) => {
     exec(
-      'npx sequelize-cli db:seed:all --config src/db/config.json --seeders-path src/db/seeders',
+      'npx sequelize-cli db:seed:all --config src/server/db/config.json --seeders-path src/server/db/seeders',
       { env: process.env },
-      (err) =>
-        err
-          ? reject(err)
-          : resolve(() => {
-              console.log('Database successfully seeded.');
-            })
+      (err) => (err ? reject(err) : resolve(() => {})),
     );
   });
 };

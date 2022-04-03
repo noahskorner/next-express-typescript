@@ -7,18 +7,18 @@ module.exports = {
       [
         {
           user_id: 1,
-          role_id: 1,
+          role: 'ADMIN',
           created_at: new Date(),
           updated_at: new Date(),
         },
         {
           user_id: 1,
-          role_id: 2,
+          role: 'SUPERADMIN',
           created_at: new Date(),
           updated_at: new Date(),
         },
       ],
-      {}
+      {},
     );
   },
 

@@ -1,5 +1,6 @@
 import { Table, Column, Model, DataType, HasMany } from 'sequelize-typescript';
 import RefreshToken from './refresh-token.model';
+import UserRole from './user-role.model';
 
 @Table({ tableName: 'user', underscored: true })
 class User extends Model {
@@ -21,19 +22,12 @@ class User extends Model {
   @HasMany(() => RefreshToken, {
     onDelete: 'CASCADE',
   })
-  refreshTokens!: Array<RefreshToken>;
+  refreshTokens!: RefreshToken[];
 
-  // @BelongsToMany(() => Role, {
-  //   through: {
-  //     model: () => UserRole,
-  //   },
-  // })
-  // roles!: Array<Role>;
-
-  // @HasMany(() => UserRole, {
-  //   onDelete: 'CASCADE',
-  // })
-  // userRoles!: Array<UserRole>;
+  @HasMany(() => UserRole, {
+    onDelete: 'CASCADE',
+  })
+  roles!: UserRole[];
 }
 
 export default User;
