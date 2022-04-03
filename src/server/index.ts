@@ -1,5 +1,6 @@
 import app from './app';
 import next from 'next';
+import cors from 'cors';
 
 const dev = process.env.NODE_ENV !== 'production';
 const server = next({ dev });
@@ -8,6 +9,8 @@ const handle = server.getRequestHandler();
 server
   .prepare()
   .then(() => {
+    const env = require('../config/env.config').default;
+
     // DATABASE
     const db = require('./db/models').default;
     db.sequelize.sync();
@@ -20,15 +23,19 @@ server
 
     // ROUTES
     const router = require('./routes').default;
+    app.use(
+      cors({
+        origin: [env.HOST],
+      }),
+    );
     app.use('/api/v1', router);
     app.get('*', (req, res) => {
       return handle(req, res);
     });
 
     // START APP
-    const port = process.env.PORT || 3000;
-    app.listen(port, () => {
-      console.log(`Server now listening on port ${port}`);
+    app.listen(env.PORT, () => {
+      console.log(`Server now listening on port ${env.PORT}`);
     });
   })
   .catch((error) => {
