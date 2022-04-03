@@ -8,15 +8,10 @@ const userRouter = Router();
 userRouter.post('/', userController.register);
 userRouter.put('/verify-email/:token', userController.verifyEmail);
 userRouter.get('/:id', authenticate, userController.getUser);
-// router.post(
-//   '/reset-password',
-//   userValidator.resetPassword,
-//   userController.resetPassword,
-// );
-// router.put(
-//   '/password/:token',
-//   userValidator.confirmResetPassword,
-//   userController.confirmResetPassword,
-// );
+userRouter.put('/reset-password', userController.resetPassword);
+userRouter.put(
+  '/reset-password/confirm/:token',
+  userController.confirmResetPassword,
+);
 
 export default userRouter;

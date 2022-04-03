@@ -18,12 +18,18 @@ if (process.env.ACCESS_TOKEN_SECRET == null)
   throw new Error('ACCESS_TOKEN_SECRET environment variable missing.');
 if (process.env.REFRESH_TOKEN_SECRET == null)
   throw new Error('REFRESH_TOKEN_SECRET environment variable missing.');
+if (process.env.VERIFY_EMAIL_SECRET == null)
+  throw new Error('VERIFY_EMAIL_SECRET environment variable missing.');
+if (process.env.RESET_PASSWORD_SECRET == null)
+  throw new Error('RESET_PASSWORD_SECRET environment variable missing.');
 if (process.env.ACCESS_TOKEN_EXPIRATION == null)
   throw new Error('ACCESS_TOKEN_EXPIRATION environment variable missing.');
 if (process.env.REFRESH_TOKEN_EXPIRATION == null)
   throw new Error('REFRESH_TOKEN_EXPIRATION environment variable missing.');
-if (process.env.VERIFY_EMAIL_SECRET == null)
-  throw new Error('VERIFY_EMAIL_SECRET environment variable missing.');
+if (process.env.VERIFY_EMAIL_EXPIRATION == null)
+  throw new Error('VERIFY_EMAIL_EXPIRATION environment variable missing.');
+if (process.env.RESET_PASSWORD_EXPIRATION == null)
+  throw new Error('RESET_PASSWORD_EXPIRATION environment variable missing.');
 if (process.env.SMTP_HOST == null)
   throw new Error('SMTP_HOST environment variable missing.');
 if (process.env.SMTP_USER == null)
@@ -43,9 +49,12 @@ const env = {
   DB_PORT: process.env.DB_PORT,
   ACCESS_TOKEN_SECRET: process.env.ACCESS_TOKEN_SECRET,
   REFRESH_TOKEN_SECRET: process.env.REFRESH_TOKEN_SECRET,
+  VERIFY_EMAIL_SECRET: process.env.VERIFY_EMAIL_SECRET,
+  RESET_PASSWORD_SECRET: process.env.RESET_PASSWORD_SECRET,
   ACCESS_TOKEN_EXPIRATION: process.env.ACCESS_TOKEN_EXPIRATION,
   REFRESH_TOKEN_EXPIRATION: process.env.REFRESH_TOKEN_EXPIRATION,
-  VERIFY_EMAIL_SECRET: process.env.VERIFY_EMAIL_SECRET,
+  VERIFY_EMAIL_EXPIRATION: process.env.VERIFY_EMAIL_EXPIRATION,
+  RESET_PASSWORD_EXPIRATION: process.env.RESET_PASSWORD_EXPIRATION,
   SMTP_HOST: process.env.SMTP_HOST,
   SMTP_USER: process.env.SMTP_USER,
   SMTP_PASSWORD: process.env.SMTP_PASSWORD,

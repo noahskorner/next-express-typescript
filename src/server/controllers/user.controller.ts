@@ -2,6 +2,9 @@ import UserService from '../services/user.service';
 import catchAsync from '../middleware/catch-async';
 import { Request, Response } from 'express';
 import UserValidator from '../validators/user.validator';
+import CreateUserRequest from '../../utils/types/requests/user/create-user';
+import ResetPasswordRequest from '../../utils/types/requests/user/reset-password';
+import ConfirmResetPasswordRequest from '../../utils/types/requests/user/confirm-reset-password';
 
 class UserController {
   private _userService = new UserService();
@@ -12,7 +15,7 @@ class UserController {
       return res.status(400).json(validationResult);
     }
 
-    const { email, password } = req.body;
+    const { email, password } = req.body as CreateUserRequest;
     const { user, errors } = await this._userService.createUser(
       email,
       password,
@@ -27,7 +30,7 @@ class UserController {
   public verifyEmail = catchAsync(async (req: Request, res: Response) => {
     const token = req.params.token;
 
-    const { errors } = await this._userService.verifyEmail(token);
+    const errors = await this._userService.verifyEmail(token);
     if (errors != null) return res.status(400).json(errors);
 
     return res.sendStatus(200);
@@ -43,65 +46,35 @@ class UserController {
     return res.status(200).json(user);
   });
 
-  // public resetPassword = catchAsync(async (req: Request, res: Response) => {
-  //   const err = validationResult(req);
-  //   if (!err.isEmpty()) {
-  //     return res.status(400).json(err);
-  //   }
+  public resetPassword = catchAsync(async (req: Request, res: Response) => {
+    const validationErrors = UserValidator.resetPassword({ ...req.body });
+    if (validationErrors.length > 0)
+      return res.status(400).json(validationErrors);
 
-  //   const { email } = req.body;
-  //   const user = await userService.findUserByEmail(email);
-  //   if (!user) return res.status(200).json(resetPassword);
+    const { email } = req.body as ResetPasswordRequest;
+    await this._userService.resetPassword(email);
 
-  //   await userService.resetPassword(user);
+    return res.sendStatus(200);
+  });
 
-  //   return res.status(200).json(resetPassword);
-  // });
+  public confirmResetPassword = catchAsync(
+    async (req: Request, res: Response) => {
+      const validationErrors = UserValidator.confirmResetPassword({
+        ...req.body,
+      });
+      if (validationErrors.length > 0)
+        return res.status(400).json(validationErrors);
 
-  // public confirmResetPassword = catchAsync(
-  //   async (req: Request, res: Response) => {
-  //     const err = validationResult(req);
-  //     if (!err.isEmpty()) {
-  //       return res.status(400).json(err);
-  //     }
+      const { token } = req.params;
+      const { password } = req.body as ConfirmResetPasswordRequest;
+      const errors = await this._userService.confirmResetPassword(
+        token,
+        password,
+      );
+      if (errors != null) return res.status(400).json(errors);
 
-  //     const resetPasswordToken = req.params.token;
-  //     const { password1 } = req.body;
-
-  //     jwt.verify(
-  //       resetPasswordToken,
-  //       env.PASSWORD_RESET_SECRET,
-  //       async (err: VerifyErrors | null, decoded: unknown) => {
-  //         if (err) return res.sendStatus(403);
-  //         try {
-  //           const { email } = decoded as { email: string };
-
-  //           userService
-  //             .findUserByPasswordResetToken(email, resetPasswordToken)
-  //             .then((user) => {
-  //               if (!user) {
-  //                 return res.sendStatus(400);
-  //               }
-
-  //               userService
-  //                 .updatePassword(user, password1)
-  //                 .then(() => {
-  //                   return res.sendStatus(200);
-  //                 })
-  //                 .catch(() => {
-  //                   return res.sendStatus(500);
-  //                 });
-  //             })
-  //             .catch(() => {
-  //               return res.sendStatus(500);
-  //             });
-  //         } catch (error) {
-  //           console.log(error);
-  //           return res.sendStatus(403);
-  //         }
-  //       },
-  //     );
-  //   },
-  // );
+      return res.sendStatus(200);
+    },
+  );
 }
 export default UserController;

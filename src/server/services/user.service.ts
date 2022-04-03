@@ -27,6 +27,9 @@ const ERROR_INVALID_TOKEN: ErrorInterface = {
 const ERROR_USER_ALREADY_VERIFIED: ErrorInterface = {
   message: 'This email is already verified.',
 };
+const ERROR_RESET_PASSWORD_TOKEN_EXPIRED: ErrorInterface = {
+  message: 'This token has expired. Please request a new password reset.',
+};
 
 class UserService {
   private _mailService = new MailService();
@@ -38,20 +41,6 @@ class UserService {
 
     return new UserDTO(user);
   };
-
-  // public findUserByPasswordResetToken = async (
-  //   email: string,
-  //   passwordResetToken: string,
-  // ): Promise<User | null> => {
-  //   const user = await User.findOne({
-  //     where: {
-  //       email,
-  //       passwordResetToken,
-  //     },
-  //   });
-
-  //   return user;
-  // };
 
   public createUser = async (
     email: string,
@@ -65,7 +54,9 @@ class UserService {
 
     const salt = await genSalt();
     const hashedPassword = await hash(password, salt);
-    const verificationToken = jwt.sign({ email }, env.VERIFY_EMAIL_SECRET);
+    const verificationToken = jwt.sign({ email }, env.VERIFY_EMAIL_SECRET, {
+      expiresIn: env.VERIFY_EMAIL_EXPIRATION,
+    });
     const user = await User.create({
       email: email,
       password: hashedPassword,
@@ -95,23 +86,32 @@ class UserService {
     return tokens;
   };
 
+  public logoutUser = async (token: string) => {
+    await RefreshToken.destroy({
+      where: {
+        token,
+      },
+    });
+  };
+
   public verifyEmail = async (
     token: string,
-  ): Promise<{ errors?: ErrorInterface[] }> => {
+  ): Promise<ErrorInterface[] | null> => {
     const user = await this.findUserByVerificationToken(token);
 
-    if (user == null) return { errors: [ERROR_INVALID_TOKEN] };
-    if (user.isVerified) return { errors: [ERROR_USER_ALREADY_VERIFIED] };
+    if (user == null) return [ERROR_INVALID_TOKEN];
+    if (user.isVerified) return [ERROR_USER_ALREADY_VERIFIED];
 
     try {
       jwt.verify(token, env.VERIFY_EMAIL_SECRET);
 
-      user.isVerified = true;
-      await user.save();
+      await user.update({
+        isVerified: true,
+      });
 
-      return {};
+      return null;
     } catch {
-      return { errors: [ERROR_INVALID_TOKEN] };
+      return [ERROR_INVALID_TOKEN];
     }
   };
 
@@ -137,6 +137,50 @@ class UserService {
       return tokens;
     } catch {
       return null;
+    }
+  };
+
+  public resetPassword = async (email: string): Promise<void> => {
+    const user = await this.findUserByEmail(email);
+    if (user == null) return;
+
+    const passwordResetToken = jwt.sign({ email }, env.RESET_PASSWORD_SECRET, {
+      expiresIn: process.env.RESET_PASSWORD_EXPIRATION,
+    });
+    await user.update({
+      passwordResetToken,
+    });
+
+    await this.sendPasswordResetEmail(user);
+
+    return;
+  };
+
+  public confirmResetPassword = async (
+    token: string,
+    password: string,
+  ): Promise<ErrorInterface[] | null> => {
+    try {
+      const { email } = jwt.verify(token, env.RESET_PASSWORD_SECRET) as {
+        email: string;
+      };
+
+      const user = await User.findOne({
+        where: {
+          email,
+          passwordResetToken: token,
+        },
+      });
+      if (user == null) return [ERROR_RESET_PASSWORD_TOKEN_EXPIRED];
+
+      await this.updatePassword(user, password);
+      await user.update({
+        passwordResetToken: null,
+      });
+
+      return null;
+    } catch {
+      return [ERROR_RESET_PASSWORD_TOKEN_EXPIRED];
     }
   };
 
@@ -183,54 +227,24 @@ class UserService {
     return { accessToken, refreshToken };
   };
 
-  public logoutUser = async (token: string) => {
-    await RefreshToken.destroy({
-      where: {
-        token,
-      },
+  private updatePassword = async (user: User, password: string) => {
+    const salt = await genSalt();
+    const hashedPassword = await hash(password, salt);
+    await user.update({
+      password: hashedPassword,
     });
   };
 
-  // public resetPassword = async (user: User) => {
-  //   const passwordResetToken = jwt.sign(
-  //     { id: user.id, email: user.email },
-  //     process.env.PASSWORD_RESET_SECRET,
-  //     {
-  //       expiresIn: process.env.PASSWORD_RESET_EXPIRATION,
-  //     },
-  //   );
+  private sendPasswordResetEmail = async (user: User) => {
+    const mail = {
+      from: 'noahskorner@gmail.com',
+      to: user.email,
+      subject: 'Reset your password!',
+      text: `${env.HOST}/user/password/${user.passwordResetToken}`,
+    };
 
-  //   await user.update({
-  //     passwordResetToken,
-  //   });
-
-  //   await this.sendPasswordResetEmail(user);
-  // };
-
-  // public updatePassword = async (user: User, password: string) => {
-  //   const salt = await genSalt();
-  //   const hashedPassword = await hash(password, salt);
-  //   await user.update({
-  //     password: hashedPassword,
-  //   });
-  // };
-
-  // public updateIsVerified = async (user: User, isVerified: boolean) => {
-  //   await user.update({
-  //     isVerified,
-  //   });
-  // };
-
-  // private sendPasswordResetEmail = async (user: User) => {
-  //   const mail = {
-  //     from: 'noahskorner@gmail.com',
-  //     to: user.email,
-  //     subject: 'Reset your password!',
-  //     text: `${process.env.HOST}/user/password/${user.passwordResetToken}`,
-  //   };
-
-  //   await mailService.sendMail(mail);
-  // };
+    await this._mailService.sendMail(mail);
+  };
 
   private sendVerificationEmail = async (user: User) => {
     const mail = {
@@ -242,16 +256,5 @@ class UserService {
 
     await this._mailService.sendMail(mail);
   };
-
-  // private getRequestUser = (user: User | RequestUser): RequestUser => {
-  //   if (user instanceof User) {
-  //     const roles = user.userRoles.map((userRole) => userRole.role.name);
-  //     return {
-  //       id: user.id,
-  //       email: user.email,
-  //       roles: roles,
-  //     } as RequestUser;
-  //   } else return user;
-  // };
 }
 export default UserService;

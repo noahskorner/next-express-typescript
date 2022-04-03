@@ -14,9 +14,12 @@ declare global {
       DB_PORT?: string;
       ACCESS_TOKEN_SECRET?: string;
       REFRESH_TOKEN_SECRET?: string;
+      VERIFY_EMAIL_SECRET?: string;
+      RESET_PASSWORD_SECRET?: string;
       ACCESS_TOKEN_EXPIRATION: string;
       REFRESH_TOKEN_EXPIRATION: string;
-      VERIFY_EMAIL_SECRET?: string;
+      VERIFY_EMAIL_EXPIRATION: string;
+      RESET_PASSWORD_EXPIRATION: string;
       SMTP_HOST?: string;
       SMTP_USER?: string;
       SMTP_PASSWORD?: string;

@@ -5,8 +5,8 @@ import authenticate from '../middleware/authenticate';
 const authController = new AuthController();
 
 const authRouter = Router();
-authRouter.post('/login', authController.login);
-authRouter.post('/refresh-token', authController.refreshToken);
-authRouter.delete('/logout', authenticate, authController.logout);
+authRouter.get('/', authController.refreshToken);
+authRouter.post('/', authController.login);
+authRouter.delete('/', authenticate, authController.logout);
 
 export default authRouter;
