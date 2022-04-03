@@ -13,7 +13,10 @@ class UserDTO {
     this.email = user.email;
     this.updatedAt = user.updatedAt;
     this.createdAt = user.updatedAt;
-    this.roles = user.roles.map((userRole) => userRole.role as RoleEnum);
+    this.roles =
+      user.roles == null
+        ? []
+        : user.roles.map((userRole) => userRole.role as RoleEnum);
   }
 }
 

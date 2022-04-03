@@ -9,7 +9,8 @@ class RequestUser {
   constructor({ id, email, roles }: User) {
     this.id = id;
     this.email = email;
-    this.roles = roles.map((userRole) => userRole.role as RoleEnum);
+    this.roles =
+      roles == null ? [] : roles.map((userRole) => userRole.role as RoleEnum);
   }
 
   public toJSON = () => {

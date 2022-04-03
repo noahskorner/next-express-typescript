@@ -10,6 +10,9 @@ const UserService = {
   get: (userId: number): Promise<AxiosResponse<UserDTO>> => {
     return API.get(`/user/${userId}`);
   },
+  verifyEmail: (token: string): Promise<AxiosResponse<void>> => {
+    return API.put(`/user/verify-email/${token}`);
+  },
 };
 
 export default UserService;
