@@ -1,14 +1,16 @@
+import ErrorInterface from '../../../utils/types/interfaces/error';
+
 interface ErrorsProps {
-  errors: Array<string>;
+  errors: ErrorInterface[];
 }
 
 const Errors = ({ errors }: ErrorsProps) => {
   return errors.length ? (
     <div>
-      {errors.map((error) => {
+      {errors.map((error, index) => {
         return (
-          <p key={error} className="text-red-500 font-medium">
-            {error}
+          <p key={index} className="text-red-500 font-medium">
+            {error.message}
           </p>
         );
       })}

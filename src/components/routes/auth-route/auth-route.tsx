@@ -7,13 +7,14 @@ interface AuthRouteProps {
 }
 
 const AuthRoute = ({ element }: AuthRouteProps) => {
-  const { loading, isAuthenticated } = useContext(AuthContext);
+  const { loading, isAuthenticated, refreshAccessToken } =
+    useContext(AuthContext);
   const router = useRouter();
 
-  //   useEffect(() => {
-  //     refreshAccessToken();
-  //     // eslint-disable-next-line react-hooks/exhaustive-deps
-  //   }, []);
+  useEffect(() => {
+    refreshAccessToken();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   if (loading) {
     return <></>;

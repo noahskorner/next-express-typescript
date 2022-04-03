@@ -14,6 +14,20 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+:focus:not(:focus-visible) {
+  outline: none;
+  box-shadow: none;
+}
+
+textarea:focus,
+input:focus {
+  outline: none;
+}
+
+*:focus {
+  outline: none;
+}
+
 /* Fonts */
 .font-primary {
   font-family: var(--font-primary);

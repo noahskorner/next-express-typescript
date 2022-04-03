@@ -1,4 +1,5 @@
 import { Errback, Response, NextFunction, Request } from 'express';
+import { ERROR_UNKOWN } from '../../utils/constants/errors';
 import ErrorInterface from '../../utils/types/interfaces/error';
 
 const errorHandler = (
@@ -8,9 +9,7 @@ const errorHandler = (
   // eslint-disable-next-line no-unused-vars
   next: NextFunction,
 ) => {
-  const errors: ErrorInterface[] = [
-    { message: 'An unknown error has occurred. Please try again.' },
-  ];
+  const errors: ErrorInterface[] = [ERROR_UNKOWN];
   return res.status(500).json(errors);
 };
 

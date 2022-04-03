@@ -1,38 +1,28 @@
 import axios from 'axios';
-import {
-  createContext,
-  Dispatch,
-  SetStateAction,
-  useEffect,
-  useState,
-} from 'react';
+import { createContext, useEffect, useState } from 'react';
 import RequestUser from '../types/dtos/request-user';
-import ErrorInterface from '../types/interfaces/error';
+import jwt_decode from 'jwt-decode';
+import AuthService from '../../services/auth-service';
+
+interface JwtToken extends RequestUser {
+  exp: number;
+}
 
 interface AuthContextInterface {
-  accessToken: string | null;
-  setAccessToken: Dispatch<SetStateAction<string | null>>;
   isAuthenticated: boolean;
-  setIsAuthenticated: Dispatch<SetStateAction<boolean>>;
   user: RequestUser | null;
-  setUser: Dispatch<SetStateAction<RequestUser | null>>;
   loading: boolean;
-  setLoading: Dispatch<SetStateAction<boolean>>;
-  errors: ErrorInterface[];
-  setErrors: Dispatch<SetStateAction<ErrorInterface[]>>;
+  // eslint-disable-next-line no-unused-vars
+  setAuth: (accessToken: string) => void;
+  refreshAccessToken: () => void;
 }
 
 const defaultValues = {
-  accessToken: null,
-  setAccessToken: () => {},
   isAuthenticated: false,
-  setIsAuthenticated: () => {},
   user: null,
-  setUser: () => {},
   loading: true,
-  setLoading: () => {},
-  errors: [],
-  setErrors: () => {},
+  setAuth: () => {},
+  refreshAccessToken: () => {},
 };
 
 export const AuthContext = createContext<AuthContextInterface>(defaultValues);
@@ -42,15 +32,41 @@ interface AuthProviderInterface {
 }
 
 export const AuthProvider = ({ children }: AuthProviderInterface) => {
-  const [accessToken, setAccessToken] = useState<string | null>(
-    defaultValues.accessToken,
-  );
+  const [accessToken, setAccessToken] = useState<string | null>(null);
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(
     defaultValues.isAuthenticated,
   );
   const [user, setUser] = useState<RequestUser | null>(defaultValues.user);
   const [loading, setLoading] = useState<boolean>(defaultValues.loading);
-  const [errors, setErrors] = useState<ErrorInterface[]>(defaultValues.errors);
+
+  const setAuth = (accessToken: string) => {
+    const { exp, ...rest } = jwt_decode<JwtToken>(accessToken);
+    const requestUser = rest as RequestUser;
+
+    setAccessToken(accessToken);
+    silentRefresh(exp);
+    setUser(requestUser);
+    setIsAuthenticated(true);
+  };
+
+  const refreshAccessToken = async () => {
+    setLoading(true);
+    try {
+      const response = await AuthService.refreshToken();
+      setAuth(response.data);
+    } catch {
+      console.log('Refresh token is expired...');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const silentRefresh = (exp: number) => {
+    const ms = Math.abs(new Date().getTime() - new Date(exp * 1000).getTime());
+    setTimeout(() => {
+      refreshAccessToken();
+    }, ms);
+  };
 
   useEffect(() => {
     if (accessToken == null) {
@@ -63,16 +79,11 @@ export const AuthProvider = ({ children }: AuthProviderInterface) => {
   return (
     <AuthContext.Provider
       value={{
-        accessToken,
-        setAccessToken,
         isAuthenticated,
-        setIsAuthenticated,
         user,
-        setUser,
         loading,
-        setLoading,
-        errors,
-        setErrors,
+        setAuth,
+        refreshAccessToken,
       }}
     >
       {children}

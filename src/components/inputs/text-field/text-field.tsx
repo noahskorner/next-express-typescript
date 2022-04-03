@@ -1,7 +1,6 @@
 import { EyeIcon, EyeOffIcon } from '@heroicons/react/outline';
 import { ExclamationCircleIcon } from '@heroicons/react/solid';
-import { useEffect, useRef, useState } from 'react';
-import InputMask from 'inputmask';
+import { useRef, useState } from 'react';
 import InputProps from '../../../utils/types/props/input';
 import Errors from '../errors';
 
@@ -9,7 +8,6 @@ interface TextFieldProps extends InputProps {
   value?: string | number;
   onInput?: Function;
   type?: 'text' | 'password' | 'textarea';
-  mask?: string;
   icon?: JSX.Element;
   color?: 'primary' | 'secondary';
 }
@@ -26,20 +24,12 @@ const TextField = ({
   label,
   placeholder,
   errors = [],
-  mask,
   icon,
   color = 'primary',
 }: TextFieldProps) => {
   const textFieldRef = useRef<any>(null);
   const [showPassword, setShowPassword] = useState(false);
   const [isFocused, setIsFocused] = useState(false);
-
-  useEffect(() => {
-    if (textFieldRef && textFieldRef.current && mask) {
-      const inputMask = new InputMask(mask);
-      inputMask.mask(textFieldRef.current);
-    }
-  }, [mask]);
 
   return (
     <div className="w-full text-sm relative space-y-1">
@@ -54,7 +44,7 @@ const TextField = ({
             : ''
         } ${
           TEXT_FIELD_CLASSES[color]
-        } w-full border shadow-sm  rounded-md flex justify-center items-center border-primary`}
+        } w-full border shadow-sm  rounded-md flex justify-center items-center border-slate-600`}
       >
         {/* Leading Icon */}
         <div className="pl-2 text-slate-400">{icon}</div>

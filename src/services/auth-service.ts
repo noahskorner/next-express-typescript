@@ -1,14 +1,18 @@
+import { AxiosResponse } from 'axios';
 import API from './api';
 
 const AuthService = {
-  login: (payload: { email: string; password: string }) => {
-    return API.post('auth/login', payload);
+  login: (payload: {
+    email: string;
+    password: string;
+  }): Promise<AxiosResponse<string>> => {
+    return API.post('auth', payload);
   },
-  refreshToken: (payload: { token: string }) => {
-    return API.post('auth/refresh-token', payload);
+  refreshToken: (): Promise<AxiosResponse<string>> => {
+    return API.get('auth');
   },
-  logout: () => {
-    return API.delete('auth/logout');
+  logout: (): Promise<AxiosResponse<void>> => {
+    return API.delete('auth');
   },
 };
 
