@@ -1,32 +1,35 @@
 import { NextPage } from 'next';
-import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { KeyboardEvent, useState } from 'react';
-import Errors from '../components/inputs/errors';
-import Spinner from '../components/inputs/spinner';
-import TextField from '../components/inputs/text-field';
-import UserValidator from '../server/validators/user.validator';
-import { apiErrorHandler } from '../services/api';
-import UserService from '../services/user-service';
-import ErrorInterface from '../utils/types/interfaces/error';
-import CreateUserRequest from '../utils/types/requests/user/create-user';
+import Errors from '../../../components/inputs/errors';
+import Spinner from '../../../components/inputs/spinner';
+import TextField from '../../../components/inputs/text-field';
+import UserValidator from '../../../server/validators/user.validator';
+import { apiErrorHandler } from '../../../services/api';
+import UserService from '../../../services/user-service';
+import ErrorInterface from '../../../utils/types/interfaces/error';
+import ConfirmResetPasswordRequest from '../../../utils/types/requests/user/confirm-reset-password';
 
-const RegisterPage: NextPage = () => {
+const ConfirmPasswordPage: NextPage = () => {
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState<ErrorInterface[]>([]);
-  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
-  const emailErrors = errors.filter((error) => error.field === 'email');
   const passwordErrors = errors.filter((error) => error.field === 'password');
   const confirmPasswordErrors = errors.filter(
     (error) => error.field === 'confirmPassword',
   );
   const router = useRouter();
+  const { token } = router.query as { token?: string };
 
-  const registerUser = async () => {
-    const payload = { email, password, confirmPassword } as CreateUserRequest;
-    const errors = UserValidator.register(payload);
+  const confirmResetPassword = async () => {
+    if (token == null) return;
+
+    const payload = {
+      password,
+      confirmPassword,
+    } as ConfirmResetPasswordRequest;
+    const errors = UserValidator.confirmResetPassword(payload);
 
     if (errors.length > 0) {
       setErrors(errors);
@@ -35,7 +38,7 @@ const RegisterPage: NextPage = () => {
 
     setLoading(true);
     try {
-      const response = await UserService.create(payload);
+      const response = await UserService.confirmResetPassword(token, payload);
       console.log(response);
       router.push('/login');
     } catch (error) {
@@ -47,12 +50,7 @@ const RegisterPage: NextPage = () => {
   };
 
   const handleOnKeyPress = (event: KeyboardEvent) => {
-    if (event.key === 'Enter') registerUser();
-  };
-
-  const handleOnInputEmail = (value: string) => {
-    setErrors((prev) => prev.filter((error) => error.field !== 'email'));
-    setEmail(value);
+    if (event.key === 'Enter') confirmResetPassword();
   };
 
   const handleOnInputPassword = (value: string) => {
@@ -76,13 +74,6 @@ const RegisterPage: NextPage = () => {
         <div className="flex flex-col space-y-4">
           <Errors errors={errors.filter((error) => error.field == null)} />
           <TextField
-            value={email}
-            onInput={handleOnInputEmail}
-            label="Email"
-            color="secondary"
-            errors={emailErrors}
-          />
-          <TextField
             value={password}
             onInput={handleOnInputPassword}
             label="Password"
@@ -98,20 +89,14 @@ const RegisterPage: NextPage = () => {
             color="secondary"
             errors={confirmPasswordErrors}
           />
-          <Link href="/login">
-            <a
-              tabIndex={-1}
-              className="text-sm hover:underline font-semibold text-blue-500 text-left"
-            >
-              Already have an account?
-            </a>
-          </Link>
           <button
-            onClick={registerUser}
+            onClick={confirmResetPassword}
             disabled={loading}
             className="bg-blue-600 text-white text-sm font-semibold px-3 py-2 border border-blue-600 rounded hover:bg-blue-500 flex justify-center items-center space-x-1 active:ring-1"
           >
-            <span className={`${loading && 'opacity-0 w-0'}`}>Register</span>
+            <span className={`${loading && 'opacity-0 w-0'}`}>
+              Update password
+            </span>
             {loading && <Spinner size="sm" />}
           </button>
         </div>
@@ -120,4 +105,4 @@ const RegisterPage: NextPage = () => {
   );
 };
 
-export default RegisterPage;
+export default ConfirmPasswordPage;

@@ -89,7 +89,7 @@ const LoginPage: NextPage = () => {
             color="secondary"
             errors={passwordErrors}
           />
-          <Link href="/register">
+          <Link href="/reset-password">
             <a
               tabIndex={-1}
               className="text-sm hover:underline font-semibold text-blue-500 text-left"
