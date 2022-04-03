@@ -1,3 +1,4 @@
+import { AuthProvider } from '../../../utils/contexts/auth-context';
 import useWindowSize from '../../../utils/hooks/use-window-size';
 
 interface GlobalLayoutProps {
@@ -8,12 +9,14 @@ const GlobalLayout = ({ children }: GlobalLayoutProps) => {
   const { heightStyle, widthStyle } = useWindowSize();
 
   return (
-    <div
-      style={{ width: widthStyle, height: heightStyle }}
-      className="font-primary"
-    >
-      {children}
-    </div>
+    <AuthProvider>
+      <div
+        style={{ width: widthStyle, height: heightStyle }}
+        className="font-primary"
+      >
+        {children}
+      </div>
+    </AuthProvider>
   );
 };
 
