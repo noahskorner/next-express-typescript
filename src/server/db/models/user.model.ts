@@ -1,7 +1,21 @@
-import { Table, Column, Model, DataType, HasMany } from 'sequelize-typescript';
+import {
+  Table,
+  Column,
+  Model,
+  DataType,
+  HasMany,
+  DefaultScope,
+} from 'sequelize-typescript';
 import RefreshToken from './refresh-token.model';
 import UserRole from './user-role.model';
 
+@DefaultScope(() => ({
+  include: [
+    {
+      model: UserRole,
+    },
+  ],
+}))
 @Table({ tableName: 'user', underscored: true })
 class User extends Model {
   @Column(DataType.STRING)

@@ -11,7 +11,7 @@ const errorHandler = (
   const errors: ErrorInterface[] = [
     { message: 'An unknown error has occurred. Please try again.' },
   ];
-  res.status(500).json(errors);
+  return res.status(500).json(errors);
 };
 
 export default errorHandler;
