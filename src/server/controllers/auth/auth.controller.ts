@@ -1,7 +1,7 @@
-import catchAsync from '../middleware/catch-async';
+import catchAsync from '../../middleware/catch-async';
 import { Request, Response } from 'express';
-import AuthValidator from '../validators/auth.validator';
-import UserService from '../services/user.service';
+import AuthValidator from '../../validators/auth.validator';
+import UserService from '../../services/user.service';
 
 const REFRESH_TOKEN_COOKIE = 'token';
 

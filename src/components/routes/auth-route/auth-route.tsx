@@ -1,5 +1,5 @@
 import { useRouter } from 'next/router';
-import { ReactFragment, useContext, useEffect } from 'react';
+import { useContext, useEffect } from 'react';
 import { AuthContext } from '../../../utils/contexts/auth-context';
 
 interface AuthRouteProps {
