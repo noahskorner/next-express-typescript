@@ -12,7 +12,7 @@ const VerifyEmailPage: NextPage = () => {
 
     try {
       await UserService.verifyEmail(token);
-      return router.push('/');
+      return router.push('/login');
     } catch {
       return router.push('/login');
     }

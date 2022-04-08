@@ -1,13 +1,10 @@
 import axios from 'axios';
 import { createContext, useEffect, useState } from 'react';
 import RequestUser from '../types/dtos/request-user';
-import jwt_decode from 'jwt-decode';
+import jwtDecode from 'jwt-decode';
 import AuthService from '../../services/auth-service';
 import { useRouter } from 'next/router';
-
-interface JwtToken extends RequestUser {
-  exp: number;
-}
+import JwtToken from '../types/interfaces/jwt-token';
 
 interface AuthContextInterface {
   isAuthenticated: boolean;
@@ -42,7 +39,7 @@ export const AuthProvider = ({ children }: AuthProviderInterface) => {
   const router = useRouter();
 
   const setAuth = (accessToken: string) => {
-    const { exp, ...rest } = jwt_decode<JwtToken>(accessToken);
+    const { exp, ...rest } = jwtDecode<JwtToken>(accessToken);
     const requestUser = rest as RequestUser;
 
     setAccessToken(accessToken);

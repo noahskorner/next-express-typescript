@@ -2,6 +2,8 @@ import catchAsync from '../../middleware/catch-async';
 import { Request, Response } from 'express';
 import AuthValidator from '../../validators/auth.validator';
 import UserService from '../../services/user.service';
+import jwtDecode from 'jwt-decode';
+import JwtToken from '../../../utils/types/interfaces/jwt-token';
 
 const REFRESH_TOKEN_COOKIE = 'token';
 
@@ -25,6 +27,7 @@ class AuthController {
     res.cookie(REFRESH_TOKEN_COOKIE, refreshToken, {
       secure: process.env.NODE_ENV === 'production',
       httpOnly: true,
+      expires: this.getTokenExpirationDate(refreshToken),
     });
     return res.status(200).json(accessToken);
   });
@@ -40,6 +43,7 @@ class AuthController {
     res.cookie(REFRESH_TOKEN_COOKIE, refreshToken, {
       secure: process.env.NODE_ENV === 'production',
       httpOnly: true,
+      expires: this.getTokenExpirationDate(refreshToken),
     });
     return res.status(200).json(accessToken);
   });
@@ -53,6 +57,14 @@ class AuthController {
     res.clearCookie(REFRESH_TOKEN_COOKIE);
     return res.sendStatus(200);
   });
+
+  private getTokenExpirationDate = (token: string) => {
+    const { exp } = jwtDecode<JwtToken>(token);
+    const expirationDate = new Date(0);
+    expirationDate.setUTCSeconds(exp);
+
+    return expirationDate;
+  };
 }
 
 export default AuthController;
