@@ -5,8 +5,8 @@ import Errors from '../../../components/inputs/errors';
 import Spinner from '../../../components/inputs/spinner';
 import TextField from '../../../components/inputs/text-field';
 import UserValidator from '../../../server/validators/user.validator';
-import { apiErrorHandler } from '../../../services/api';
 import UserService from '../../../services/user-service';
+import handleServiceError from '../../../utils/services/handle-service-error';
 import ErrorInterface from '../../../utils/types/interfaces/error';
 import ConfirmResetPasswordRequest from '../../../utils/types/requests/user/confirm-reset-password';
 
@@ -42,7 +42,7 @@ const ConfirmPasswordPage: NextPage = () => {
       console.log(response);
       router.push('/login');
     } catch (error) {
-      const errors = apiErrorHandler(error);
+      const { errors } = handleServiceError(error);
       setErrors(errors);
     } finally {
       setLoading(false);

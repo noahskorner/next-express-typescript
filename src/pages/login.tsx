@@ -6,9 +6,9 @@ import Errors from '../components/inputs/errors';
 import Spinner from '../components/inputs/spinner';
 import TextField from '../components/inputs/text-field';
 import AuthValidator from '../server/validators/auth.validator';
-import { apiErrorHandler } from '../services/api';
 import AuthService from '../services/auth-service';
 import { AuthContext } from '../utils/contexts/auth-context';
+import handleServiceError from '../utils/services/handle-service-error';
 import ErrorInterface from '../utils/types/interfaces/error';
 import LoginRequest from '../utils/types/requests/auth/login';
 
@@ -37,7 +37,7 @@ const LoginPage: NextPage = () => {
       setAuth(response.data);
       router.push('/');
     } catch (error) {
-      const errors = apiErrorHandler(error);
+      const { errors } = handleServiceError(error);
       setErrors(errors);
     } finally {
       setLoading(false);
