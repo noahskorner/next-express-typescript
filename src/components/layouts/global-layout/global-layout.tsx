@@ -1,4 +1,5 @@
 import { AuthProvider } from '../../../utils/contexts/auth-context';
+import { ToastProvider } from '../../../utils/contexts/toast-context';
 import useWindowSize from '../../../utils/hooks/use-window-size';
 
 interface GlobalLayoutProps {
@@ -10,12 +11,14 @@ const GlobalLayout = ({ children }: GlobalLayoutProps) => {
 
   return (
     <AuthProvider>
-      <div
-        style={{ width: widthStyle, height: heightStyle }}
-        className="font-primary text-white bg-slate-900"
-      >
-        {children}
-      </div>
+      <ToastProvider>
+        <div
+          style={{ width: widthStyle, height: heightStyle }}
+          className="font-primary text-white bg-slate-900"
+        >
+          {children}
+        </div>
+      </ToastProvider>
     </AuthProvider>
   );
 };

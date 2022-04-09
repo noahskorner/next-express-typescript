@@ -8,6 +8,10 @@ const useWindowSize = () => {
     width: undefined,
     height: undefined,
   });
+  const heightStyle =
+    windowSize.height != null ? `${windowSize.height}px` : '100%';
+  const widthStyle =
+    windowSize.width != null ? `${windowSize.width}px` : '100%';
 
   useEffect(() => {
     const handleResize = () => {
@@ -24,8 +28,8 @@ const useWindowSize = () => {
   return {
     height: windowSize.height,
     width: windowSize.width,
-    heightStyle: `${windowSize.height}px`,
-    widthStyle: `${windowSize.width}px`,
+    heightStyle: heightStyle,
+    widthStyle: widthStyle,
   };
 };
 

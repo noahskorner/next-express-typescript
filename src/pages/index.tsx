@@ -3,7 +3,7 @@ import type { NextPage } from 'next';
 const IndexPage: NextPage = () => {
   return (
     <div>
-      Home page{' '}
+      Home Next
       <svg
         className="w-96 h-96"
         width="35"

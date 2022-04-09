@@ -1,13 +1,13 @@
 import { NextPage } from 'next';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { KeyboardEvent, useContext, useState } from 'react';
+import { KeyboardEvent, useState } from 'react';
 import Errors from '../components/inputs/errors';
 import Spinner from '../components/inputs/spinner';
 import TextField from '../components/inputs/text-field';
 import AuthValidator from '../server/validators/auth.validator';
 import AuthService from '../services/auth-service';
-import { AuthContext } from '../utils/contexts/auth-context';
+import useAuth from '../utils/hooks/use-auth';
 import handleServiceError from '../utils/services/handle-service-error';
 import ErrorInterface from '../utils/types/interfaces/error';
 import LoginRequest from '../utils/types/requests/auth/login';
@@ -19,7 +19,7 @@ const LoginPage: NextPage = () => {
   const [password, setPassword] = useState('');
   const emailErrors = errors.filter((error) => error.field === 'email');
   const passwordErrors = errors.filter((error) => error.field === 'password');
-  const { setAuth } = useContext(AuthContext);
+  const { setAuth } = useAuth();
   const router = useRouter();
 
   const loginUser = async () => {
