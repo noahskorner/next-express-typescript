@@ -13,7 +13,7 @@ interface TextFieldProps extends InputProps {
 }
 
 const TEXT_FIELD_CLASSES = {
-  primary: 'bg-white dark:bg-slate-800',
+  primary: 'bg-white dark:bg-slate-900',
   secondary: 'bg-slate-50 dark:bg-slate-700',
 };
 
@@ -33,18 +33,25 @@ const TextField = ({
 
   return (
     <div className="w-full text-sm relative space-y-1">
-      {label && <label htmlFor="">{label}</label>}
+      {label && (
+        <label
+          htmlFor=""
+          className="uppercase text-xs font-semibold text-slate-300"
+        >
+          {label}
+        </label>
+      )}
       {/* Text Field */}
       <div
         className={`${
           errors.length
             ? 'ring-1 ring-red-500'
             : isFocused
-            ? 'ring-1 ring-blue-600'
+            ? 'ring-1 ring-indigo-600'
             : ''
         } ${
           TEXT_FIELD_CLASSES[color]
-        } w-full border shadow-sm  rounded-md flex justify-center items-center border-slate-600`}
+        } w-full border shadow-sm  rounded-md flex justify-center items-center border-slate-900`}
       >
         {/* Leading Icon */}
         <div className="pl-2 text-slate-400">{icon}</div>

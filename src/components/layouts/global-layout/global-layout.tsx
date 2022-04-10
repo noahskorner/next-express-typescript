@@ -14,7 +14,7 @@ const GlobalLayout = ({ children }: GlobalLayoutProps) => {
       <ToastProvider>
         <div
           style={{ width: widthStyle, height: heightStyle }}
-          className="font-primary text-white bg-slate-900"
+          className="font-primary text-white bg-slate-700"
         >
           {children}
         </div>
