@@ -3,26 +3,27 @@
 }
 .slide-in-enter-active {
   transform: translateX(0%);
-  transition: 200ms;
+  transition: 400ms;
 }
 .slide-in-enter-done {
   transform: translateX(0%);
 }
 .slide-in-appear {
-  transform: none;
+  transform: translateX(-100%);
 }
 .slide-in-appear-active {
-  transform: none;
+  transform: translateX(0%);
+  transition: 400ms;
 }
 .slide-in-appear-done {
-  transform: none;
+  transform: translateX(0%);
 }
 .slide-in-exit {
   transform: translateX(0%);
 }
 .slide-in-exit-active {
   transform: translateX(-100%);
-  transition: 200ms;
+  transition: 400ms;
 }
 .slide-in-exit-done {
   transform: translateX(-100%);

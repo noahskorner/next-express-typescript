@@ -92,7 +92,7 @@ const ConfirmPasswordPage: NextPage = () => {
           <button
             onClick={confirmResetPassword}
             disabled={loading}
-            className="bg-indigo-600 text-white text-sm font-semibold px-3 py-2 border border-indigo-600 rounded hover:bg-indigo-500 flex justify-center items-center space-x-1 active:ring-1"
+            className="bg-blue-600 text-white text-sm font-semibold px-3 py-2 border border-blue-600 rounded hover:bg-blue-500 flex justify-center items-center space-x-1 active:ring-1"
           >
             <span className={`${loading && 'opacity-0 w-0'}`}>
               Update password

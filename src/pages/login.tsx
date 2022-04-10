@@ -61,61 +61,50 @@ const LoginPage: NextPage = () => {
   return (
     <div
       onKeyPress={handleOnKeyPress}
-      className="w-full h-full flex flex-col justify-center items-center p-6 bg-indigo-500 text-primary bg-login"
+      className="w-full h-full flex flex-col sm:justify-center items-center p-6 sm:pb-96 bg-gray-100 dark:bg-slate-900 text-primary"
     >
-      <div className="w-full max-w-lg bg-slate-700 rounded border-primary shadow-md border dark:border-0 dark:shadow-xl p-8 bounce-in">
+      <div className="w-full max-w-sm bg-white dark:bg-slate-800 rounded border-primary shadow-md border dark:border-0 dark:shadow-xl p-6">
         <div className="flex flex-col space-y-4">
-          <div className="space-y-1 w-full text-center">
-            <h1 className="font-extrabold text-2xl">Welcome Back!</h1>
-            <p className="text-slate-300 text-sm">
-              We&apos;re so excited to see you again!
-            </p>
-          </div>
           <Errors errors={errors.filter((error) => error.field == null)} />
           <TextField
             value={email}
             onInput={handleOnInputEmail}
             label="Email"
-            color="primary"
+            color="secondary"
             errors={emailErrors}
           />
-          <div>
-            <TextField
-              value={password}
-              onInput={handleOnInputPassword}
-              label="Password"
-              type="password"
-              color="primary"
-              errors={passwordErrors}
-            />
-            <Link href="/reset-password">
-              <a
-                tabIndex={-1}
-                className="text-xs hover:underline font-semibold text-sky-500 text-left"
-              >
-                Forgot Password?
-              </a>
-            </Link>
-          </div>
+          <Link href="/register">
+            <a
+              tabIndex={-1}
+              className="text-sm hover:underline font-semibold text-blue-500 text-left"
+            >
+              Need an account?
+            </a>
+          </Link>
+          <TextField
+            value={password}
+            onInput={handleOnInputPassword}
+            label="Password"
+            type="password"
+            color="secondary"
+            errors={passwordErrors}
+          />
+          <Link href="/reset-password">
+            <a
+              tabIndex={-1}
+              className="text-sm hover:underline font-semibold text-blue-500 text-left"
+            >
+              Forgot Password?
+            </a>
+          </Link>
           <button
             onClick={loginUser}
             disabled={loading}
-            className="bg-indigo-600 text-white text-sm font-semibold px-3 py-2 border border-indigo-600 rounded hover:bg-indigo-500 flex justify-center items-center space-x-1 active:ring-1"
+            className="bg-blue-600 text-white text-sm font-semibold px-3 py-2 border border-blue-600 rounded hover:bg-blue-500 flex justify-center items-center space-x-1 active:ring-1"
           >
             <span className={`${loading && 'opacity-0 w-0'}`}>Login</span>
             {loading && <Spinner size="sm" />}
           </button>
-          <p className="text-xs text-slate-500">
-            Need an account? &nbsp;
-            <Link href="/register">
-              <a
-                tabIndex={-1}
-                className="hover:underline font-semibold text-sky-500 text-left"
-              >
-                Register
-              </a>
-            </Link>
-          </p>
         </div>
       </div>
     </div>

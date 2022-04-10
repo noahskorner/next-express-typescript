@@ -12,7 +12,6 @@ const useWindowSize = () => {
     windowSize.height != null ? `${windowSize.height}px` : '100%';
   const widthStyle =
     windowSize.width != null ? `${windowSize.width}px` : '100%';
-  const isMobileWidth = windowSize.width && windowSize.width <= 768;
 
   useEffect(() => {
     const handleResize = () => {
@@ -31,7 +30,6 @@ const useWindowSize = () => {
     width: windowSize.width,
     heightStyle: heightStyle,
     widthStyle: widthStyle,
-    isMobileWidth,
   };
 };
 
